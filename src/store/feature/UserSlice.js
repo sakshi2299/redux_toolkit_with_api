@@ -6,7 +6,7 @@ export const FetchNewsAPI = createAsyncThunk(
     async (payload, thunkAPI) => {
         console.log(payload)
       try {
-        const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+        const response = await axios.get("https://jsonplaceholder.typicode.com/users");
         return thunkAPI.fulfillWithValue(response.data);
       } catch (error) {
         return thunkAPI.rejectWithValue(error);
@@ -16,14 +16,14 @@ export const FetchNewsAPI = createAsyncThunk(
 
 
   export const FetchNewsAP = createAsyncThunk(
-    "user/fetchUser",
-    async (payload, thunkAPI) => {
+    "user/SinglefetchUser",
+    async (payload, thunkAP) => {
         console.log(payload)
       try {
-        const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
-        return thunkAPI.fulfillWithValue(response.data);
+        const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+        return thunkAP.fulfillWithValue(response.data);
       } catch (error) {
-        return thunkAPI.rejectWithValue(error);
+        return thunkAP.rejectWithValue(error);
       }
     }
   )
@@ -31,6 +31,12 @@ export const FetchNewsAPI = createAsyncThunk(
 const initialState = {
   value: 0,
   userData:{
+    data:[],
+    loading: false,
+    status:"",
+    errorData:[]
+  },
+  singleData:{
     data:[],
     loading: false,
     status:"",
@@ -61,7 +67,27 @@ export const UserSlice = createSlice({
         state.userData.errorData = action.payload
 
     });
+    builder.addCase(FetchNewsAP.pending, (state, action) => {
+      state.singleData.loading = true
+  });
+  builder.addCase(FetchNewsAP.fulfilled, (state, action) => {
+      state.singleData.loading = false;
+      state.singleData.data = action.payload
+      state.singleData.status = "Success"
+  });
+  builder.addCase(FetchNewsAP.rejected, (state, action) => {
+      state.singleData.loading = false
+      state.singleData.status = "Error"
+      state.singleData.errorData = action.payload
+
+  });
+
+
+
+
+
   }
+
 })
 
 // Action creators are generated for each case reducer function
